@@ -1,8 +1,12 @@
 import os
+import sys
+
 from qtpy.QtGui import *
 from qtpy.QtWidgets import *
 from qtpy.QtCore import *
 from copy import *
+
+from examples.example_calculator.editor_settings_wnd import settingsWidget
 from nodeeditor.utils import loadStylesheets
 from nodeeditor.node_editor_window import NodeEditorWindow
 from examples.example_calculator.master_editor_wnd import MasterEditorWnd
@@ -55,6 +59,8 @@ class MasterWindow(NodeEditorWindow):
             print("Registered nodes:")
             # pp(FUNCTIONS)
         self.graphsNames = []
+        self.autoSaveVar = 30
+
 
         self.all_VE_lists = []
         self.all_graphs = []
@@ -88,7 +94,7 @@ class MasterWindow(NodeEditorWindow):
         # Create Nodes List
         self.createFunctionsDock()
 
-        # Creat Files Dock
+        # Create Files Dock
         self.CreateFilesDock()
 
         # Create Variable List
@@ -106,7 +112,6 @@ class MasterWindow(NodeEditorWindow):
         self.setWindowTitle("Vision Visual Scripting")
 
         self.CodeWndSettingBtn.triggered.connect(self.RotateTextCodeWnd)
-
         # self.NodeDesignerBtn.setChecked(True)
         # self.updateActiveWnd()
 
@@ -127,21 +132,37 @@ class MasterWindow(NodeEditorWindow):
         self.nodeDesignerBtn.triggered.connect(self.updateActiveWnd)
         self.nodeDesignerBtn.setShortcut(QKeySequence("`"))
 
+        self.settingsBtn = QAction(QIcon("icons/Settings.png"), "&Open Settings Window", self)
+        self.settingsBtn.setCheckable(True)
+        self.settingsBtn.triggered.connect(self.onSettingsOpen)
+        self.settingsBtn.setShortcut(QKeySequence("Ctrl+Shift+S"))
+        self.toolsBar.addAction(self.settingsBtn)
+
         mySpacer = QWidget()
         mySpacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.toolsBar.addWidget(mySpacer)
 
         self.CodeWndSettingBtn = QAction(QIcon("icons/Oriantation.png"), "&Code Window View Mode", self)
-        self.toolsBar.addAction(self.CodeWndSettingBtn)
-
         self.CodeWndSettingBtn.setCheckable(True)
         self.CodeWndSettingBtn.setShortcut(QKeySequence("Ctrl+Shift+R"))
-        self.codeWndCopy = QAction(QIcon("icons/Copy.png"), "&Copy The Code From The Code Window", self)
-        self.toolsBar.addAction(self.codeWndCopy)
+        self.toolsBar.addAction(self.CodeWndSettingBtn)
 
+        self.codeWndCopy = QAction(QIcon("icons/Copy.png"), "&Copy The Code From The Code Window", self)
         self.codeWndCopy.setCheckable(True)
         self.codeWndCopy.triggered.connect(self.CopyTextCode)
         self.codeWndCopy.setShortcut(QKeySequence("Ctrl+Shift+C"))
+        self.toolsBar.addAction(self.codeWndCopy)
+
+    def onSettingsOpen(self):
+        self.settingsWidget = settingsWidget()
+        self.settingsWidget.masterRef = self
+        self.settingsWidget.show()
+
+        self.settingsWidget.setWindowTitle("Settings")
+        self.settingsWidget.setGeometry(100, 100, 800, 600)
+
+    def onSetAutoSave(self, autoSaveNum):
+        self.autoSaveVar = autoSaveNum
 
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()
