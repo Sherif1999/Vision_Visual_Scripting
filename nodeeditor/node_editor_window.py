@@ -27,7 +27,6 @@ class NodeEditorWindow(QMainWindow):
         self.name_product = 'Vision Visual Scripting'
         self.initUI()
 
-
     def initUI(self):
 
         """Set up this ``QMainWindow``. Create :class:`~nodeeditor.node_editor_widget.NodeEditorWidget`, Actions and Menus"""
@@ -48,7 +47,6 @@ class NodeEditorWindow(QMainWindow):
         self.setTitle()
         self.show()
 
-
     def sizeHint(self):
         return QSize(800, 600)
 
@@ -62,19 +60,18 @@ class NodeEditorWindow(QMainWindow):
 
     def createActions(self):
         """Create basic `File` and `Edit` actions"""
-        self.actNew = QAction('&New Graph', self, shortcut='Ctrl+N', statusTip="Create new graph", triggered=self.onNewGraphTab)
-        self.actOpen = QAction('&Open', self, shortcut='Ctrl+O', statusTip="Open file", triggered=self.onFileOpen)
-        self.actSave = QAction('&Save', self, shortcut='Ctrl+S', statusTip="Save file", triggered=self.onFileSave)
-        self.actSaveAs = QAction('Save &As...', self, shortcut='Ctrl+Shift+S', statusTip="Save file as...", triggered=self.onFileSaveAs)
-        self.actExit = QAction('E&xit', self, shortcut='Ctrl+Q', statusTip="Exit application", triggered=self.close)
+        self.actNew = QAction('&New Graph', self, shortcut=self.NewGraph, statusTip="Create new graph", triggered=self.onNewGraphTab)
+        self.actOpen = QAction('&Open', self, shortcut=self.Open, statusTip="Open file", triggered=self.onFileOpen)
+        self.actSave = QAction('&Save', self, shortcut=self.save, statusTip="Save file", triggered=self.onFileSave)
+        self.actSaveAs = QAction('Save &As...', self, shortcut=self.SaveAs, statusTip="Save file as...", triggered=self.onFileSaveAs)
+        self.actExit = QAction('E&xit', self, shortcut=self.Exit, statusTip="Exit application", triggered=self.close)
 
-        self.actUndo = QAction('&Undo', self, shortcut='Ctrl+Z', statusTip="Undo last operation", triggered=self.onEditUndo)
-        self.actRedo = QAction('&Redo', self, shortcut='Ctrl+Shift+Z', statusTip="Redo last operation", triggered=self.onEditRedo)
-        self.actCut = QAction('Cu&t', self, shortcut='Ctrl+X', statusTip="Cut to clipboard", triggered=self.onEditCut)
-        self.actCopy = QAction('&Copy', self, shortcut='Ctrl+C', statusTip="Copy to clipboard", triggered=self.onEditCopy)
-        self.actPaste = QAction('&Paste', self, shortcut='Ctrl+V', statusTip="Paste from clipboard", triggered=self.onEditPaste)
-        self.actDelete = QAction('&Delete', self, shortcut='Del', statusTip="Delete selected items", triggered=self.onEditDelete)
-
+        self.actUndo = QAction('&Undo', self, shortcut=self.Undo, statusTip="Undo last operation", triggered=self.onEditUndo)
+        self.actRedo = QAction('&Redo', self, shortcut=self.Redo, statusTip="Redo last operation", triggered=self.onEditRedo)
+        self.actCut = QAction('Cu&t', self, shortcut=self.Cut, statusTip="Cut to clipboard", triggered=self.onEditCut)
+        self.actCopy = QAction('&Copy', self, shortcut=self.Copy, statusTip="Copy to clipboard", triggered=self.onEditCopy)
+        self.actPaste = QAction('&Paste', self, shortcut=self.Paste, statusTip="Paste from clipboard", triggered=self.onEditPaste)
+        self.actDelete = QAction('&Delete', self, shortcut=self.Delete, statusTip="Delete selected items", triggered=self.onEditDelete)
 
     def createMenus(self):
         """Create Menus for `File` and `Edit`"""
@@ -82,8 +79,7 @@ class NodeEditorWindow(QMainWindow):
         self.createEditMenu()
 
     def createFileMenu(self):
-        menubar = self.menuBar()
-        self.fileMenu = menubar.addMenu('&File')
+        self.fileMenu = self.menuBar().addMenu('&File')
         self.fileMenu.addAction(self.actNew)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.actOpen)
@@ -93,9 +89,10 @@ class NodeEditorWindow(QMainWindow):
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.actExit)
 
+        # self.fileMenu.insertAction(self.actSetProjectDir)
+
     def createEditMenu(self):
-        menubar = self.menuBar()
-        self.editMenu = menubar.addMenu('&Edit')
+        self.editMenu = self.menuBar().addMenu('&Edit')
         self.editMenu.addAction(self.actUndo)
         self.editMenu.addAction(self.actRedo)
         self.editMenu.addSeparator()
@@ -111,7 +108,6 @@ class NodeEditorWindow(QMainWindow):
         title += self.CurrentNodeEditor().getUserFriendlyFilename()
 
         self.setWindowTitle(title)
-
 
     def closeEvent(self, event):
         """Handle close event. Ask before we loose work"""
@@ -158,7 +154,6 @@ class NodeEditorWindow(QMainWindow):
             return False
 
         return True
-
 
     def onScenePosChanged(self, x:int, y:int):
         """Handle event when cursor position changed on the `Scene`

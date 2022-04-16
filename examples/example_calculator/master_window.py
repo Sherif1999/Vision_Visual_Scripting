@@ -27,7 +27,6 @@ from nodeeditor.node_edge_validators import (
     edge_cannot_connect_input_and_output_of_same_node
 )
 
-# Edge.registerEdgeValidator(edge_validator_debug)
 Edge.registerEdgeValidator(edge_cannot_connect_two_outputs_or_two_inputs)
 Edge.registerEdgeValidator(edge_cannot_connect_input_and_output_of_same_node)
 
@@ -58,10 +57,26 @@ class MasterWindow(NodeEditorWindow):
         if DEBUG:
             print("Registered nodes:")
             # pp(FUNCTIONS)
-        self.graphsNames = []
+
         self.autoSaveVar = 30
+        # File Settings
+        self.NewGraph = "Ctrl+N"
+        self.Open = "Ctrl+O"
+        self.setProjectDir = "Ctrl+Shift+O"
+        self.save = "Ctrl+S"
+        self.SaveAs = "Ctrl+Shift+S"
+        self.Exit = "Ctrl+Q"
+
+        # Edit Settings
+        self.Undo = "Ctrl+Z"
+        self.Redo = "Ctrl+Shift+Z"
+        self.Cut = "Ctrl+X"
+        self.Copy = "Ctrl+C"
+        self.Paste = "Ctrl+V"
+        self.Delete = "Del"
 
 
+        self.graphsNames = []
         self.all_VE_lists = []
         self.all_graphs = []
 
@@ -161,9 +176,6 @@ class MasterWindow(NodeEditorWindow):
         self.settingsWidget.setWindowTitle("Settings")
         self.settingsWidget.setGeometry(100, 100, 800, 600)
 
-    def onSetAutoSave(self, autoSaveNum):
-        self.autoSaveVar = autoSaveNum
-
     def CopyTextCode(self):
         node_editor = self.CurrentNodeEditor()
 
@@ -197,8 +209,9 @@ class MasterWindow(NodeEditorWindow):
     def createActions(self):
         super().createActions()
 
-        self.actSetProjectDir = QAction('&Open Project', self, shortcut='Ctrl+Shift+O', statusTip="Set a Folder For Your Project", triggered=self.filesWidget.onSetProjectFolder)
-
+        self.actSetProjectDir = QAction('&Open Project', self, shortcut=self.setProjectDir,
+                                        statusTip="Set a Folder For Your Project",
+                                        triggered=self.filesWidget.onSetProjectFolder)
         self.actClose = QAction("Cl&ose", self, statusTip="Close the active window",
                                 triggered=self.graphs_parent_wdg.closeActiveSubWindow)
         self.actCloseAll = QAction("Close &All", self, statusTip="Close all the windows",
